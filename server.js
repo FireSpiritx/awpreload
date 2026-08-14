@@ -26,6 +26,14 @@ const {
   PORT = 8787,
 } = process.env;
 
+// Eksik/yanlış yazılmış değişken varsa hemen başlangıçta net şekilde söyle
+const REQUIRED = { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, BROADCASTER_USER_ID, WEBHOOK_SECRET };
+const missing = Object.entries(REQUIRED).filter(([, v]) => !v).map(([k]) => k);
+if (missing.length) {
+  console.error('EKSİK ORTAM DEĞİŞKENİ(LERİ): ' + missing.join(', '));
+  console.error('Railway > Variables sekmesinde bu isimlerin TAM OLARAK böyle yazıldığından emin ol, sonra yeniden deploy et.');
+}
+
 const app = express();
 app.use(express.json());
 
@@ -38,6 +46,12 @@ function base64url(buf) {
 }
 
 app.get('/auth', (req, res) => {
+  if (!CLIENT_ID || !REDIRECT_URI) {
+    return res.status(500).send(
+      'CLIENT_ID veya REDIRECT_URI ayarlanmamış. Railway > Variables sekmesini kontrol et. Eksikler: ' +
+      [!CLIENT_ID && 'CLIENT_ID', !REDIRECT_URI && 'REDIRECT_URI'].filter(Boolean).join(', ')
+    );
+  }
   const verifier = base64url(crypto.randomBytes(32));
   const challenge = base64url(crypto.createHash('sha256').update(verifier).digest());
   pendingVerifier = verifier;
@@ -55,7 +69,14 @@ app.get('/auth', (req, res) => {
 
 app.get('/callback', async (req, res) => {
   try {
-    const { code } = req.query;
+    const { code, error, error_description } = req.query;
+    if (error) {
+      return res.status(400).send('Kick izin ekranından hata döndü: ' + error + ' - ' + (error_description || ''));
+    }
+    if (!code) {
+      return res.status(400).send('URL içinde "code" parametresi yok. Kick izin ekranını tam onaylamadan mı geldin?');
+    }
+
     const body = new URLSearchParams({
       grant_type: 'authorization_code',
       client_id: CLIENT_ID,
@@ -69,8 +90,19 @@ app.get('/callback', async (req, res) => {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body,
     });
-    const data = await r.json();
-    if (!r.ok) throw new Error(JSON.stringify(data));
+
+    const raw = await r.text();
+    let data;
+    try { data = JSON.parse(raw); } catch { data = null; }
+
+    if (!r.ok || !data || !data.access_token) {
+      console.error('Kick token endpoint cevabı - status:', r.status, 'body:', raw);
+      return res.status(500).send(
+        'Token alınamadı. HTTP durumu: ' + r.status + '<br>Kick\'in ham cevabı: <pre>' +
+        (raw || '(boş cevap)') + '</pre>' +
+        'Deploy Logs\'ta da aynısı yazıyor. Muhtemel sebep: CLIENT_SECRET yanlış, ya da REDIRECT_URI Kick uygulama ayarındakiyle birebir aynı değil.'
+      );
+    }
 
     token = {
       access_token: data.access_token,
