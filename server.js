@@ -194,4 +194,32 @@ server.listen(PORT, () => {
   console.log(`1) http://localhost:${PORT}/auth  -> Kick hesabınla giriş yap`);
   console.log(`2) http://localhost:${PORT}/subscribe -> event aboneliğini kur`);
   console.log(`3) OBS Browser Source -> http://localhost:${PORT}/overlay?ws=ws://localhost:${PORT}/ws&demo=0`);
+
+app.get('/test-credentials', async (req, res) => {
+  try {
+    const body = new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+    });
+
+    const r = await fetch('https://id.kick.com/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body,
+    });
+
+    const raw = await r.text();
+
+    console.log('CLIENT CREDENTIALS TEST:', r.status, raw);
+
+    res.status(r.status).send(
+      `Kick cevap: ${r.status}<br><pre>${raw}</pre>`
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err.message);
+  }
 });
