@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>AWP Şarjör Overlay</title>
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brass:#d9b25c;
+    --brass-dark:#8a6a24;
+    --metal:#3a3d3a;
+    --metal-light:#6b7168;
+    --glass:#bfe8ff;
+    --paper:#eef2ea;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    background:transparent;
+    overflow:hidden;
+    font-family:'Rajdhani',sans-serif;
+  }
+  #stage{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  #canvas{ position:relative; width:420px; height:480px; transform-origin:center center; }
+
+  /* ---------- MAGAZINE SHAPE (kendi AWP görselinin altına/üstüne bunu hizala) ---------- */
+  #magBody{
+    position:absolute; left:56px; top:20px;
+    width:112px; height:320px;
+    clip-path: polygon(8% 0%, 92% 0%, 100% 88%, 86% 100%, 14% 100%, 0% 88%);
+    background: linear-gradient(180deg,
+      rgba(191,232,255,.14) 0%,
+      rgba(191,232,255,.05) 45%,
+      rgba(0,0,0,.30) 100%);
+    border-left: 2px solid rgba(191,232,255,.30);
+    border-right: 2px solid rgba(191,232,255,.30);
+    display:flex; flex-direction:column-reverse;
+    padding:6px 8px;
+    gap:4px;
+    overflow:hidden;
+  }
+  #magBody.full{
+    background: linear-gradient(180deg,
+      rgba(217,178,92,.30) 0%,
+      rgba(217,178,92,.10) 45%,
+      rgba(0,0,0,.30) 100%);
+    border-left-color: var(--brass);
+    border-right-color: var(--brass);
+  }
+
+  .slot{ flex:1; position:relative; display:flex; align-items:center; justify-content:center; }
+
+  /* ince uzun, tek parça silüetli gerçekçi fişek (kovan -> omuz -> boyun -> sivri uç) */
+  .round{
+    position:relative;
+    width:90px; height:17px;
+    opacity:0;
+    transform: translateY(-260px);
+    transition: transform .5s cubic-bezier(.55,0,1,.45), opacity .12s linear;
+  }
+  .round .body{
+    position:absolute; inset:0;
+    clip-path: polygon(0% 0%, 44% 0%, 58% 24%, 70% 24%, 100% 50%, 70% 76%, 58% 76%, 44% 100%, 0% 100%);
+    background: linear-gradient(90deg,
+      #f2e4ab 0%, #dfc684 16%, #c7a94f 36%, #ad8a3c 45%,
+      #cf8348 55%, #b06a34 72%, #935526 92%, #7d4720 100%);
+  }
+  .round .sheen{
+    position:absolute; inset:0;
+    clip-path: polygon(0% 0%, 44% 0%, 58% 24%, 70% 24%, 100% 50%, 70% 76%, 58% 76%, 44% 100%, 0% 100%);
+    background: linear-gradient(180deg,
+      rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 28%,
+      rgba(0,0,0,0) 62%, rgba(0,0,0,.38) 100%);
+    mix-blend-mode: overlay;
+  }
+  .round .rim{
+    position:absolute; left:-3px; top:12%; bottom:12%; width:4px;
+    background:#5a4a22; border-radius:2px 0 0 2px;
+  }
+  .slot.filled .round{ opacity:1; transform:translateY(0); }
+
+  /* ---------- NAMES LIST (şarjörün yanında) ---------- */
+  #namesList{
+    position:absolute; left:190px; top:20px;
+    width:180px; height:320px;
+    display:flex; flex-direction:column-reverse;
+    gap:4px; padding:6px 0;
+  }
+  .nameRow{
+    flex:1; display:flex; align-items:center;
+    font-family:'Teko',sans-serif; font-weight:600; font-size:19px;
+    letter-spacing:.5px; color: var(--paper);
+    text-shadow:0 1px 3px rgba(0,0,0,.7);
+    opacity:0; text-transform:uppercase;
+    overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+  }
+  .nameRow.filled{ opacity:1; }
+  .nameRow::before{ content:'›'; color:var(--brass); margin-right:6px; font-weight:700; }
+
+  /* ---------- COUNTER ---------- */
+  #status{
+    position:absolute; left:56px; top:352px; width:112px;
+    text-align:center;
+    font-family:'Teko',sans-serif; font-weight:700; font-size:20px; letter-spacing:1px;
+    color: var(--glass); text-shadow:0 2px 4px rgba(0,0,0,.6);
+  }
+  #status.full{ color: var(--brass); }
+
+  /* ---------- DEMO PANEL (test, yayında gizle) ---------- */
+  #demoPanel{
+    position:fixed; left:12px; top:12px;
+    background:rgba(10,12,10,.72);
+    border:1px solid rgba(191,232,255,.25);
+    border-radius:8px; padding:10px;
+    display:flex; flex-direction:column; gap:6px;
+    z-index:50;
+  }
+  #demoPanel input{
+    background:#0e100e; border:1px solid #3c4636; color:var(--paper);
+    padding:6px 8px; border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:13px; width:150px;
+  }
+  #demoPanel button{
+    background:#3c4636; color:var(--paper); border:1px solid #5c6b4c;
+    padding:6px 8px; border-radius:4px; font-family:'Rajdhani',sans-serif; font-weight:600; font-size:13px; cursor:pointer;
+  }
+  #demoPanel button.reset{ background:#8a3a2a; border-color:#c9432a; }
+  #demoPanel .label{ font-size:11px; color:#9fb08f; letter-spacing:.5px; text-transform:uppercase; }
+</style>
+</head>
+<body>
+
+<div id="demoPanel">
+  <div class="label">Test paneli (yayında gizle: ?demo=0)</div>
+  <input id="nameInput" type="text" placeholder="Abone / hediye eden adı" maxlength="20">
+  <button id="addBtn">Abone Ekle</button>
+  <button id="resetBtn" class="reset">Şarjörü Sıfırla</button>
+</div>
+
+<div id="stage">
+  <div id="canvas">
+
+    <div id="magBody">
+      <div class="slot"><div class="round"><div class="rim"></div><div class="body"></div><div class="sheen"></div></div></div>
+      <div class="slot"><div class="round"><div class="rim"></div><div class="body"></div><div class="sheen"></div></div></div>
+      <div class="slot"><div class="round"><div class="rim"></div><div class="body"></div><div class="sheen"></div></div></div>
+      <div class="slot"><div class="round"><div class="rim"></div><div class="body"></div><div class="sheen"></div></div></div>
+      <div class="slot"><div class="round"><div class="rim"></div><div class="body"></div><div class="sheen"></div></div></div>
+    </div>
+
+    <div id="namesList">
+      <div class="nameRow"></div>
+      <div class="nameRow"></div>
+      <div class="nameRow"></div>
+      <div class="nameRow"></div>
+      <div class="nameRow"></div>
+    </div>
+
+    <div id="status">0 / 5</div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const MAX_ROUNDS = 5; // istersen artır/azalt
+  const AUTO_RELOAD_ON_OVERFLOW = true; // dolduktan sonra gelen abone şarjörü sıfırlayıp yeniden doldurur
+
+  const magBody   = document.getElementById('magBody');
+  const slots     = Array.from(document.querySelectorAll('.slot'));
+  const nameRows  = Array.from(document.querySelectorAll('.nameRow'));
+  const statusEl  = document.getElementById('status');
+
+  let names = [];
+
+  function render(){
+    slots.forEach((slot, i) => slot.classList.toggle('filled', i < names.length));
+    nameRows.forEach((row, i) => {
+      if (i < names.length){
+        row.textContent = names[i];
+        row.classList.add('filled');
+      } else {
+        row.textContent = '';
+        row.classList.remove('filled');
+      }
+    });
+    const full = names.length >= MAX_ROUNDS;
+    statusEl.textContent = names.length + ' / ' + MAX_ROUNDS;
+    statusEl.classList.toggle('full', full);
+    magBody.classList.toggle('full', full);
+  }
+
+  window.addSubscriber = function(name){
+    name = (name || 'ANONİM').toString().trim().slice(0, 20) || 'ANONİM';
+    if (names.length >= MAX_ROUNDS){
+      if (!AUTO_RELOAD_ON_OVERFLOW) return;
+      names = [];
+      render();
+      setTimeout(() => { names.push(name); render(); }, 200);
+      return;
+    }
+    names.push(name);
+    render();
+  };
+
+  window.resetMag = function(){ names = []; render(); };
+
+  render();
+
+  document.getElementById('addBtn').addEventListener('click', () => {
+    const input = document.getElementById('nameInput');
+    window.addSubscriber(input.value || ('Abone' + (names.length + 1)));
+    input.value = '';
+  });
+  document.getElementById('nameInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('addBtn').click();
+  });
+  document.getElementById('resetBtn').addEventListener('click', () => window.resetMag());
+
+  const params = new URLSearchParams(location.search);
+  if (params.get('demo') === '0') document.getElementById('demoPanel').style.display = 'none';
+
+  // ---- Kick köprü sunucusuna bağlan (gerçek abone eventleri) ----
+  // OBS Browser Source URL'sine ?ws=ws://localhost:8787/ws eklersen otomatik bağlanır.
+  const wsUrl = params.get('ws');
+  if (wsUrl){
+    function connect(){
+      const socket = new WebSocket(wsUrl);
+      socket.onmessage = (ev) => {
+        try {
+          const msg = JSON.parse(ev.data);
+          if (msg.type === 'sub') window.addSubscriber(msg.name);
+        } catch(e){ console.error('WS mesaj hatası', e); }
+      };
+      socket.onclose = () => setTimeout(connect, 2000); // bağlantı koparsa yeniden dener
+      socket.onerror = () => socket.close();
+    }
+    connect();
+  }
+
+  function fitScale(){
+    const s = Math.min(window.innerWidth / 420, window.innerHeight / 480);
+    document.getElementById('canvas').style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitScale);
+  fitScale();
+})();
+</script>
+
+</body>
+</html>
