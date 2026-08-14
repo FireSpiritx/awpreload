@@ -599,13 +599,7 @@ wss.on('connection', (socket) => {
 
 // ---------- 6) Overlay ----------
 
-app.use(
-  '/overlay',
-  express.static(
-    path.join(__dirname, 'overlay')
-  )
-);
-
+app.use(express.static(__dirname));
 // ---------- 7) Manuel test ----------
 
 app.get(
