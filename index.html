@@ -1,4 +1,4 @@
-Tabii. Önceki gönderdiğim kodun **tek parça halinde**, satırları korunmuş şekilde hali aşağıda. Direkt `index.html` içine komple yapıştırabilirsin.
+Tamam. 7.62×39 M43'e daha yakın olacak şekilde **daralan konik kovan + belirgin omuz + sivri FMJ uç** görünümü yaptım; ayrıca isimleri şarjöre daha fazla yaklaştırdım. 7.62×39'un gerçek fişek boyu yaklaşık 56 mm ve kovanı belirgin biçimde konik/şişkin omuzludur. ([romarm.ro][1])
 
 ```html
 <!DOCTYPE html>
@@ -7,6 +7,7 @@ Tabii. Önceki gönderdiğim kodun **tek parça halinde**, satırları korunmuş
 <meta charset="UTF-8">
 <title>AWP Şarjör Overlay</title>
 <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
 :root{
   --brass:#d9b25c;
@@ -99,12 +100,13 @@ html,body{
   justify-content:center;
 }
 
-/* ---------- MERMİ ---------- */
+/* ---------- 7.62x39 TARZI MERMİ ---------- */
+/* Sivri uç SOLA bakıyor */
 
 .round{
   position:relative;
   width:58px;
-  height:17px;
+  height:18px;
 
   opacity:0;
   transform:translateY(-220px);
@@ -114,7 +116,10 @@ html,body{
     opacity .12s linear;
 }
 
-/* UCU SOLA BAKIYOR */
+/* Gerçek 7.62x39 görünümüne yakın:
+   solda sivri FMJ çekirdek,
+   ortada dar boyun/omuz,
+   sağda konik kovan ve dip */
 
 .round .body{
   position:absolute;
@@ -122,28 +127,32 @@ html,body{
 
   clip-path:polygon(
     0% 50%,
-    30% 0%,
-    56% 0%,
-    68% 24%,
-    100% 24%,
-    100% 76%,
-    68% 76%,
-    56% 100%,
-    30% 100%
+    27% 0%,
+    48% 0%,
+    58% 25%,
+    67% 32%,
+    100% 38%,
+    100% 62%,
+    67% 68%,
+    58% 75%,
+    48% 100%,
+    27% 100%
   );
 
   background:linear-gradient(
     90deg,
-    #7d4720 0%,
-    #935526 15%,
-    #b06a34 35%,
-    #cf8348 50%,
-    #ad8a3c 65%,
-    #c7a94f 80%,
-    #dfc684 92%,
-    #f2e4ab 100%
+    #9a5c29 0%,
+    #b87338 18%,
+    #c9894d 35%,
+    #b28e3e 48%,
+    #c3a34b 58%,
+    #d5b766 72%,
+    #e1ca82 88%,
+    #ead99e 100%
   );
 }
+
+/* Mermi ucunu metalik göster */
 
 .round .sheen{
   position:absolute;
@@ -151,20 +160,22 @@ html,body{
 
   clip-path:polygon(
     0% 50%,
-    30% 0%,
-    56% 0%,
-    68% 24%,
-    100% 24%,
-    100% 76%,
-    68% 76%,
-    56% 100%,
-    30% 100%
+    27% 0%,
+    48% 0%,
+    58% 25%,
+    67% 32%,
+    100% 38%,
+    100% 62%,
+    67% 68%,
+    58% 75%,
+    48% 100%,
+    27% 100%
   );
 
   background:linear-gradient(
     180deg,
     rgba(255,255,255,.55) 0%,
-    rgba(255,255,255,0) 28%,
+    rgba(255,255,255,0) 30%,
     rgba(0,0,0,0) 62%,
     rgba(0,0,0,.38) 100%
   );
@@ -172,13 +183,23 @@ html,body{
   mix-blend-mode:overlay;
 }
 
+/* Fişeğin dip kısmı */
+
 .round .rim{
   position:absolute;
   right:-3px;
-  top:12%;
-  bottom:12%;
-  width:4px;
-  background:#5a4a22;
+  top:8%;
+  bottom:8%;
+  width:5px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #57431c,
+      #8d6d2a,
+      #4b3919
+    );
+
   border-radius:0 2px 2px 0;
 }
 
@@ -191,9 +212,9 @@ html,body{
 
 #namesList{
   position:absolute;
-  left:5px;
+  left:42px;
   top:20px;
-  width:245px;
+  width:215px;
   height:230px;
 
   display:flex;
@@ -233,7 +254,7 @@ html,body{
 .nameRow::before{
   content:'›';
   color:var(--brass);
-  margin-right:8px;
+  margin-right:6px;
   font-weight:700;
   font-size:32px;
 }
@@ -421,7 +442,6 @@ html,body{
 (function(){
 
   const MAX_ROUNDS = 5;
-
   const AUTO_RELOAD_ON_OVERFLOW = true;
 
   const magBody =
@@ -663,3 +683,5 @@ html,body{
 </body>
 </html>
 ```
+
+[1]: https://romarm.ro/wp-content/uploads/2021/11/Catalog-ROMARM-web.pdf?utm_source=chatgpt.com "ARMORED VEHICLES"
