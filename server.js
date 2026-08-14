@@ -189,12 +189,6 @@ app.get('/test/:name', (req, res) => {
   res.send('gönderildi: ' + req.params.name);
 });
 
-server.listen(PORT, () => {
-  console.log(`Kick köprüsü çalışıyor: http://localhost:${PORT}`);
-  console.log(`1) http://localhost:${PORT}/auth  -> Kick hesabınla giriş yap`);
-  console.log(`2) http://localhost:${PORT}/subscribe -> event aboneliğini kur`);
-  console.log(`3) OBS Browser Source -> http://localhost:${PORT}/overlay?ws=ws://localhost:${PORT}/ws&demo=0`);
-
 app.get('/test-credentials', async (req, res) => {
   try {
     const body = new URLSearchParams({
@@ -222,4 +216,11 @@ app.get('/test-credentials', async (req, res) => {
     console.error(err);
     res.status(500).send(err.message);
   }
+});
+
+server.listen(PORT, () => {
+  console.log(`Kick köprüsü çalışıyor: http://localhost:${PORT}`);
+  console.log(`1) http://localhost:${PORT}/auth  -> Kick hesabınla giriş yap`);
+  console.log(`2) http://localhost:${PORT}/subscribe -> event aboneliğini kur`);
+  console.log(`3) OBS Browser Source -> http://localhost:${PORT}/overlay?ws=ws://localhost:${PORT}/ws&demo=0`);
 });
