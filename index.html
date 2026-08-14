@@ -1,6 +1,3 @@
-Tamam. 7.62×39 M43'e daha yakın olacak şekilde **daralan konik kovan + belirgin omuz + sivri FMJ uç** görünümü yaptım; ayrıca isimleri şarjöre daha fazla yaklaştırdım. 7.62×39'un gerçek fişek boyu yaklaşık 56 mm ve kovanı belirgin biçimde konik/şişkin omuzludur. ([romarm.ro][1])
-
-```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -9,341 +6,416 @@ Tamam. 7.62×39 M43'e daha yakın olacak şekilde **daralan konik kovan + belirg
 <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --brass:#d9b25c;
-  --brass-dark:#8a6a24;
-  --metal:#3a3d3a;
-  --metal-light:#6b7168;
-  --glass:#bfe8ff;
-  --paper:#eef2ea;
-}
+  :root{
+    --brass:#d9b25c;
+    --brass-dark:#8a6a24;
+    --metal:#3a3d3a;
+    --metal-light:#6b7168;
+    --glass:#bfe8ff;
+    --paper:#eef2ea;
+  }
 
-*{box-sizing:border-box}
+  *{box-sizing:border-box;}
 
-html,body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  background:transparent;
-  overflow:hidden;
-  font-family:'Rajdhani',sans-serif;
-}
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:transparent;
+    overflow:hidden;
+    font-family:'Rajdhani',sans-serif;
+  }
 
-#stage{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+  #stage{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
 
-#canvas{
-  position:relative;
-  width:500px;
-  height:350px;
-  transform-origin:center center;
-}
+  #canvas{
+    position:relative;
+    width:420px;
+    height:480px;
+    transform-origin:center center;
+  }
 
-/* ---------- ŞARJÖR ---------- */
+  /* =========================
+     ŞARJÖR
+  ========================= */
 
-#magBody{
-  position:absolute;
-  left:260px;
-  top:20px;
-  width:70px;
-  height:230px;
+  #magBody{
+    position:absolute;
+    left:56px;
+    top:20px;
+    width:102px;
+    height:285px;
 
-  clip-path:polygon(
-    10% 0%,
-    90% 0%,
-    100% 88%,
-    85% 100%,
-    15% 100%,
-    0% 88%
-  );
-
-  background:linear-gradient(
-    180deg,
-    rgba(191,232,255,.14) 0%,
-    rgba(191,232,255,.05) 45%,
-    rgba(0,0,0,.30) 100%
-  );
-
-  border-left:2px solid rgba(191,232,255,.30);
-  border-right:2px solid rgba(191,232,255,.30);
-
-  display:flex;
-  flex-direction:column-reverse;
-  padding:5px;
-  gap:3px;
-  overflow:hidden;
-}
-
-#magBody.full{
-  background:linear-gradient(
-    180deg,
-    rgba(217,178,92,.30) 0%,
-    rgba(217,178,92,.10) 45%,
-    rgba(0,0,0,.30) 100%
-  );
-
-  border-left-color:var(--brass);
-  border-right-color:var(--brass);
-}
-
-.slot{
-  flex:1;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* ---------- 7.62x39 TARZI MERMİ ---------- */
-/* Sivri uç SOLA bakıyor */
-
-.round{
-  position:relative;
-  width:58px;
-  height:18px;
-
-  opacity:0;
-  transform:translateY(-220px);
-
-  transition:
-    transform .5s cubic-bezier(.55,0,1,.45),
-    opacity .12s linear;
-}
-
-/* Gerçek 7.62x39 görünümüne yakın:
-   solda sivri FMJ çekirdek,
-   ortada dar boyun/omuz,
-   sağda konik kovan ve dip */
-
-.round .body{
-  position:absolute;
-  inset:0;
-
-  clip-path:polygon(
-    0% 50%,
-    27% 0%,
-    48% 0%,
-    58% 25%,
-    67% 32%,
-    100% 38%,
-    100% 62%,
-    67% 68%,
-    58% 75%,
-    48% 100%,
-    27% 100%
-  );
-
-  background:linear-gradient(
-    90deg,
-    #9a5c29 0%,
-    #b87338 18%,
-    #c9894d 35%,
-    #b28e3e 48%,
-    #c3a34b 58%,
-    #d5b766 72%,
-    #e1ca82 88%,
-    #ead99e 100%
-  );
-}
-
-/* Mermi ucunu metalik göster */
-
-.round .sheen{
-  position:absolute;
-  inset:0;
-
-  clip-path:polygon(
-    0% 50%,
-    27% 0%,
-    48% 0%,
-    58% 25%,
-    67% 32%,
-    100% 38%,
-    100% 62%,
-    67% 68%,
-    58% 75%,
-    48% 100%,
-    27% 100%
-  );
-
-  background:linear-gradient(
-    180deg,
-    rgba(255,255,255,.55) 0%,
-    rgba(255,255,255,0) 30%,
-    rgba(0,0,0,0) 62%,
-    rgba(0,0,0,.38) 100%
-  );
-
-  mix-blend-mode:overlay;
-}
-
-/* Fişeğin dip kısmı */
-
-.round .rim{
-  position:absolute;
-  right:-3px;
-  top:8%;
-  bottom:8%;
-  width:5px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #57431c,
-      #8d6d2a,
-      #4b3919
+    clip-path:polygon(
+      8% 0%,
+      92% 0%,
+      100% 88%,
+      86% 100%,
+      14% 100%,
+      0% 88%
     );
 
-  border-radius:0 2px 2px 0;
-}
+    background:linear-gradient(
+      180deg,
+      rgba(191,232,255,.14) 0%,
+      rgba(191,232,255,.05) 45%,
+      rgba(0,0,0,.30) 100%
+    );
 
-.slot.filled .round{
-  opacity:1;
-  transform:translateY(0);
-}
+    border-left:2px solid rgba(191,232,255,.30);
+    border-right:2px solid rgba(191,232,255,.30);
 
-/* ---------- İSİMLER ---------- */
+    display:flex;
+    flex-direction:column-reverse;
 
-#namesList{
-  position:absolute;
-  left:42px;
-  top:20px;
-  width:215px;
-  height:230px;
+    padding:6px 5px;
+    gap:3px;
 
-  display:flex;
-  flex-direction:column-reverse;
-  gap:3px;
-  padding:5px 0;
-}
+    overflow:hidden;
+  }
 
-.nameRow{
-  flex:1;
-  display:flex;
-  align-items:center;
+  #magBody.full{
+    background:linear-gradient(
+      180deg,
+      rgba(217,178,92,.30) 0%,
+      rgba(217,178,92,.10) 45%,
+      rgba(0,0,0,.30) 100%
+    );
 
-  font-family:'Teko',sans-serif;
-  font-weight:700;
-  font-size:30px;
-  letter-spacing:.8px;
+    border-left-color:var(--brass);
+    border-right-color:var(--brass);
+  }
 
-  color:var(--paper);
+  .slot{
+    flex:1;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
 
-  text-shadow:
-    0 1px 3px rgba(0,0,0,.8),
-    0 0 5px rgba(0,0,0,.4);
+  /* =========================
+     7.62 BENZERİ MERMİ
+  ========================= */
 
-  opacity:0;
-  text-transform:uppercase;
+  .round{
+    position:relative;
 
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-}
+    width:78px;
+    height:42px;
 
-.nameRow.filled{
-  opacity:1;
-}
+    opacity:0;
 
-.nameRow::before{
-  content:'›';
-  color:var(--brass);
-  margin-right:6px;
-  font-weight:700;
-  font-size:32px;
-}
+    transform:translateY(-220px);
 
-/* ---------- SAYAC ---------- */
+    transition:
+      transform .5s cubic-bezier(.55,0,1,.45),
+      opacity .12s linear;
+  }
 
-#status{
-  position:absolute;
-  left:260px;
-  top:258px;
-  width:70px;
+  /*
+    Mermi şekli:
+    solda kovan tabanı,
+    ortada uzun pirinç gövde,
+    sağda daralan boyun,
+    en sağda sivri çekirdek.
+  */
 
-  text-align:center;
+  .round .body{
+    position:absolute;
 
-  font-family:'Teko',sans-serif;
-  font-weight:700;
-  font-size:18px;
-  letter-spacing:1px;
+    left:2px;
+    top:5px;
 
-  color:var(--glass);
+    width:74px;
+    height:32px;
 
-  text-shadow:0 2px 4px rgba(0,0,0,.6);
-}
+    clip-path:polygon(
+      0% 8%,
+      48% 8%,
+      58% 17%,
+      67% 17%,
+      100% 50%,
+      67% 83%,
+      58% 83%,
+      48% 92%,
+      0% 92%
+    );
 
-#status.full{
-  color:var(--brass);
-}
+    background:
+      linear-gradient(
+        90deg,
+        #e9d18a 0%,
+        #cba94e 20%,
+        #f0d982 42%,
+        #c49b43 58%,
+        #d5b65e 68%,
+        #b57c36 78%,
+        #a7662d 100%
+      );
 
-/* ---------- TEST PANELİ ---------- */
+    border-radius:3px;
+  }
 
-#demoPanel{
-  position:fixed;
-  left:12px;
-  top:12px;
+  /* Pirinç gövdedeki parlaklık */
 
-  background:rgba(10,12,10,.72);
-  border:1px solid rgba(191,232,255,.25);
-  border-radius:8px;
+  .round .sheen{
+    position:absolute;
 
-  padding:10px;
+    left:2px;
+    top:5px;
 
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+    width:74px;
+    height:32px;
 
-  z-index:50;
-}
+    clip-path:polygon(
+      0% 8%,
+      48% 8%,
+      58% 17%,
+      67% 17%,
+      100% 50%,
+      67% 83%,
+      58% 83%,
+      48% 92%,
+      0% 92%
+    );
 
-#demoPanel input{
-  background:#0e100e;
-  border:1px solid #3c4636;
-  color:var(--paper);
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.60) 0%,
+        rgba(255,255,255,.18) 25%,
+        rgba(255,255,255,0) 48%,
+        rgba(80,45,10,.25) 100%
+      );
 
-  padding:6px 8px;
-  border-radius:4px;
+    mix-blend-mode:overlay;
+  }
 
-  font-family:'Rajdhani',sans-serif;
-  font-size:13px;
+  /* Kovan tabanı */
 
-  width:150px;
-}
+  .round .rim{
+    position:absolute;
 
-#demoPanel button{
-  background:#3c4636;
-  color:var(--paper);
+    left:-1px;
+    top:8px;
 
-  border:1px solid #5c6b4c;
+    width:7px;
+    height:26px;
 
-  padding:6px 8px;
-  border-radius:4px;
+    background:
+      linear-gradient(
+        90deg,
+        #7e6125 0%,
+        #e4cb7a 35%,
+        #b18b38 70%,
+        #71551f 100%
+      );
 
-  font-family:'Rajdhani',sans-serif;
-  font-weight:600;
-  font-size:13px;
+    border-radius:2px 0 0 2px;
 
-  cursor:pointer;
-}
+    box-shadow:
+      inset 1px 0 rgba(255,255,255,.45),
+      inset -1px 0 rgba(0,0,0,.35);
+  }
 
-#demoPanel button.reset{
-  background:#8a3a2a;
-  border-color:#c9432a;
-}
+  /* Kovan ile çekirdek arasındaki halka */
 
-#demoPanel .label{
-  font-size:11px;
-  color:#9fb08f;
-  letter-spacing:.5px;
-  text-transform:uppercase;
-}
+  .round::after{
+    content:"";
+
+    position:absolute;
+
+    left:50px;
+    top:11px;
+
+    width:3px;
+    height:20px;
+
+    background:
+      linear-gradient(
+        90deg,
+        #795423,
+        #e2bd5e,
+        #815a26
+      );
+
+    opacity:.9;
+  }
+
+  .slot.filled .round{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* =========================
+     İSİMLER
+  ========================= */
+
+  #namesList{
+    position:absolute;
+
+    /* Şarjörün hemen yanında */
+    left:162px;
+    top:20px;
+
+    width:205px;
+    height:285px;
+
+    display:flex;
+    flex-direction:column-reverse;
+
+    gap:3px;
+    padding:6px 0;
+  }
+
+  .nameRow{
+    flex:1;
+
+    display:flex;
+    align-items:center;
+
+    font-family:'Teko',sans-serif;
+    font-weight:600;
+
+    /* Yazılar daha büyük */
+    font-size:24px;
+
+    letter-spacing:.5px;
+
+    color:var(--paper);
+
+    text-shadow:
+      0 1px 3px rgba(0,0,0,.8),
+      0 0 4px rgba(0,0,0,.4);
+
+    opacity:0;
+
+    text-transform:uppercase;
+
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+  }
+
+  .nameRow.filled{
+    opacity:1;
+  }
+
+  /* Sarı ok tamamen kaldırıldı */
+
+  .nameRow::before{
+    content:"";
+    display:none;
+  }
+
+  /* =========================
+     COUNTER
+  ========================= */
+
+  #status{
+    position:absolute;
+
+    left:56px;
+    top:315px;
+
+    width:102px;
+
+    text-align:center;
+
+    font-family:'Teko',sans-serif;
+    font-weight:700;
+    font-size:20px;
+    letter-spacing:1px;
+
+    color:var(--glass);
+
+    text-shadow:
+      0 2px 4px rgba(0,0,0,.6);
+  }
+
+  #status.full{
+    color:var(--brass);
+  }
+
+  /* =========================
+     DEMO PANEL
+  ========================= */
+
+  #demoPanel{
+    position:fixed;
+    left:12px;
+    top:12px;
+
+    background:rgba(10,12,10,.72);
+
+    border:1px solid rgba(191,232,255,.25);
+
+    border-radius:8px;
+
+    padding:10px;
+
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+
+    z-index:50;
+  }
+
+  #demoPanel input{
+    background:#0e100e;
+    border:1px solid #3c4636;
+
+    color:var(--paper);
+
+    padding:6px 8px;
+
+    border-radius:4px;
+
+    font-family:'Rajdhani',sans-serif;
+    font-size:13px;
+
+    width:150px;
+  }
+
+  #demoPanel button{
+    background:#3c4636;
+
+    color:var(--paper);
+
+    border:1px solid #5c6b4c;
+
+    padding:6px 8px;
+
+    border-radius:4px;
+
+    font-family:'Rajdhani',sans-serif;
+    font-weight:600;
+    font-size:13px;
+
+    cursor:pointer;
+  }
+
+  #demoPanel button.reset{
+    background:#8a3a2a;
+    border-color:#c9432a;
+  }
+
+  #demoPanel .label{
+    font-size:11px;
+    color:#9fb08f;
+
+    letter-spacing:.5px;
+
+    text-transform:uppercase;
+  }
 </style>
 </head>
 
@@ -372,9 +444,12 @@ html,body{
 
 </div>
 
+
 <div id="stage">
 
   <div id="canvas">
+
+    <!-- ŞARJÖR -->
 
     <div id="magBody">
 
@@ -420,6 +495,9 @@ html,body{
 
     </div>
 
+
+    <!-- İSİMLER -->
+
     <div id="namesList">
 
       <div class="nameRow"></div>
@@ -430,6 +508,7 @@ html,body{
 
     </div>
 
+
     <div id="status">
       0 / 5
     </div>
@@ -438,10 +517,12 @@ html,body{
 
 </div>
 
+
 <script>
 (function(){
 
   const MAX_ROUNDS = 5;
+
   const AUTO_RELOAD_ON_OVERFLOW = true;
 
   const magBody =
@@ -460,7 +541,9 @@ html,body{
   const statusEl =
     document.getElementById('status');
 
+
   let names = [];
+
 
   function render(){
 
@@ -473,17 +556,20 @@ html,body{
 
     });
 
+
     nameRows.forEach((row,i) => {
 
       if(i < names.length){
 
-        row.textContent = names[i];
+        row.textContent =
+          names[i];
 
         row.classList.add('filled');
 
       }else{
 
-        row.textContent = '';
+        row.textContent =
+          '';
 
         row.classList.remove('filled');
 
@@ -491,16 +577,20 @@ html,body{
 
     });
 
+
     const full =
       names.length >= MAX_ROUNDS;
 
+
     statusEl.textContent =
       names.length + ' / ' + MAX_ROUNDS;
+
 
     statusEl.classList.toggle(
       'full',
       full
     );
+
 
     magBody.classList.toggle(
       'full',
@@ -509,51 +599,62 @@ html,body{
 
   }
 
-  window.addSubscriber = function(name){
 
-    name =
-      (name || 'ANONİM')
-      .toString()
-      .trim()
-      .slice(0,20)
-      || 'ANONİM';
+  window.addSubscriber =
+    function(name){
 
-    if(names.length >= MAX_ROUNDS){
+      name =
+        (name || 'ANONİM')
+        .toString()
+        .trim()
+        .slice(0,20)
+        || 'ANONİM';
 
-      if(!AUTO_RELOAD_ON_OVERFLOW)
+
+      if(names.length >= MAX_ROUNDS){
+
+        if(!AUTO_RELOAD_ON_OVERFLOW)
+          return;
+
+
+        names = [];
+
+        render();
+
+
+        setTimeout(() => {
+
+          names.push(name);
+
+          render();
+
+        },200);
+
+
         return;
+
+      }
+
+
+      names.push(name);
+
+      render();
+
+    };
+
+
+  window.resetMag =
+    function(){
 
       names = [];
 
       render();
 
-      setTimeout(() => {
+    };
 
-        names.push(name);
-
-        render();
-
-      },200);
-
-      return;
-
-    }
-
-    names.push(name);
-
-    render();
-
-  };
-
-  window.resetMag = function(){
-
-    names = [];
-
-    render();
-
-  };
 
   render();
+
 
   document
     .getElementById('addBtn')
@@ -562,33 +663,42 @@ html,body{
       const input =
         document.getElementById('nameInput');
 
+
       window.addSubscriber(
         input.value ||
         ('Abone' + (names.length + 1))
       );
 
+
       input.value = '';
 
     });
+
 
   document
     .getElementById('nameInput')
     .addEventListener('keydown',e => {
 
       if(e.key === 'Enter')
-        document.getElementById('addBtn').click();
+        document
+          .getElementById('addBtn')
+          .click();
 
     });
 
+
   document
     .getElementById('resetBtn')
-    .addEventListener(
-      'click',
-      () => window.resetMag()
-    );
+    .addEventListener('click',() => {
+
+      window.resetMag();
+
+    });
+
 
   const params =
     new URLSearchParams(location.search);
+
 
   if(params.get('demo') === '0'){
 
@@ -598,8 +708,12 @@ html,body{
 
   }
 
+
+  /* KICK WEBSOCKET */
+
   const wsUrl =
     params.get('ws');
+
 
   if(wsUrl){
 
@@ -608,60 +722,64 @@ html,body{
       const socket =
         new WebSocket(wsUrl);
 
-      socket.onmessage = ev => {
 
-        try{
+      socket.onmessage =
+        (ev) => {
 
-          const msg =
-            JSON.parse(ev.data);
+          try{
 
-          if(msg.type === 'sub'){
+            const msg =
+              JSON.parse(ev.data);
 
-            window.addSubscriber(
-              msg.name
+
+            if(msg.type === 'sub'){
+
+              window.addSubscriber(
+                msg.name
+              );
+
+            }
+
+          }catch(e){
+
+            console.error(
+              'WS mesaj hatası',
+              e
             );
 
           }
 
-        }catch(e){
+        };
 
-          console.error(
-            'WS mesaj hatası',
-            e
+
+      socket.onclose =
+        () =>
+          setTimeout(
+            connect,
+            2000
           );
 
-        }
 
-      };
-
-      socket.onclose = () => {
-
-        setTimeout(
-          connect,
-          2000
-        );
-
-      };
-
-      socket.onerror = () => {
-
-        socket.close();
-
-      };
+      socket.onerror =
+        () =>
+          socket.close();
 
     }
+
 
     connect();
 
   }
 
+
   function fitScale(){
 
     const s =
       Math.min(
-        window.innerWidth / 500,
-        window.innerHeight / 350
+        window.innerWidth / 420,
+        window.innerHeight / 480
       );
+
 
     document
       .getElementById('canvas')
@@ -670,10 +788,12 @@ html,body{
 
   }
 
+
   window.addEventListener(
     'resize',
     fitScale
   );
+
 
   fitScale();
 
@@ -682,6 +802,3 @@ html,body{
 
 </body>
 </html>
-```
-
-[1]: https://romarm.ro/wp-content/uploads/2021/11/Catalog-ROMARM-web.pdf?utm_source=chatgpt.com "ARMORED VEHICLES"
