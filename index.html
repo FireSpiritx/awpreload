@@ -15,7 +15,9 @@
     --paper:#eef2ea;
   }
 
-  *{box-sizing:border-box;}
+  *{
+    box-sizing:border-box;
+  }
 
   html,body{
     margin:0;
@@ -42,16 +44,18 @@
     transform-origin:center center;
   }
 
-  /* =========================
+
+  /* =========================================================
      ŞARJÖR
-  ========================= */
+     ========================================================= */
 
   #magBody{
     position:absolute;
-    left:56px;
+    left:35px;
     top:20px;
-    width:102px;
-    height:285px;
+
+    width:105px;
+    height:300px;
 
     clip-path:polygon(
       8% 0%,
@@ -75,7 +79,7 @@
     display:flex;
     flex-direction:column-reverse;
 
-    padding:6px 5px;
+    padding:6px 6px;
     gap:3px;
 
     overflow:hidden;
@@ -93,186 +97,191 @@
     border-right-color:var(--brass);
   }
 
+
+  /* =========================================================
+     MERMİ SLOT
+     ========================================================= */
+
   .slot{
     flex:1;
     position:relative;
+
     display:flex;
     align-items:center;
     justify-content:center;
   }
 
-  /* =========================
-     7.62 BENZERİ MERMİ
-  ========================= */
+
+  /* =========================================================
+     MERMİ
+     
+     UÇ SOLDA:
+     
+           /\ 
+     -----/  \----------------
+     
+     İnce uç
+     → kısa geçiş
+     → kalın düz gövde
+     ========================================================= */
 
   .round{
     position:relative;
 
-    width:78px;
-    height:42px;
+    width:91px;
+    height:16px;
 
     opacity:0;
 
-    transform:translateY(-220px);
+    transform:translateY(-250px);
 
     transition:
       transform .5s cubic-bezier(.55,0,1,.45),
       opacity .12s linear;
   }
 
-  /*
-    Mermi şekli:
-    solda kovan tabanı,
-    ortada uzun pirinç gövde,
-    sağda daralan boyun,
-    en sağda sivri çekirdek.
-  */
+
+  /* Ana mermi gövdesi */
 
   .round .body{
     position:absolute;
-
-    left:2px;
-    top:5px;
-
-    width:74px;
-    height:32px;
+    inset:0;
 
     clip-path:polygon(
-      0% 8%,
-      48% 8%,
-      58% 17%,
-      67% 17%,
-      100% 50%,
-      67% 83%,
-      58% 83%,
-      48% 92%,
-      0% 92%
+      0% 50%,
+
+      7% 32%,
+      14% 22%,
+      22% 15%,
+
+      27% 0%,
+
+      100% 0%,
+      100% 100%,
+      27% 100%,
+
+      22% 85%,
+      14% 78%,
+      7% 68%
     );
 
-    background:
-      linear-gradient(
-        90deg,
-        #e9d18a 0%,
-        #cba94e 20%,
-        #f0d982 42%,
-        #c49b43 58%,
-        #d5b65e 68%,
-        #b57c36 78%,
-        #a7662d 100%
-      );
+    background:linear-gradient(
+      180deg,
 
-    border-radius:3px;
+      #fff0b7 0%,
+      #ead48e 16%,
+      #c7a94f 34%,
+      #b99543 48%,
+      #d3b75d 63%,
+      #aa8635 82%,
+      #7f6428 100%
+    );
   }
 
-  /* Pirinç gövdedeki parlaklık */
+
+  /* Merminin üst parlaklığı */
 
   .round .sheen{
     position:absolute;
-
-    left:2px;
-    top:5px;
-
-    width:74px;
-    height:32px;
+    inset:0;
 
     clip-path:polygon(
-      0% 8%,
-      48% 8%,
-      58% 17%,
-      67% 17%,
-      100% 50%,
-      67% 83%,
-      58% 83%,
-      48% 92%,
-      0% 92%
+      0% 50%,
+
+      7% 32%,
+      14% 22%,
+      22% 15%,
+      27% 0%,
+
+      100% 0%,
+      100% 100%,
+      27% 100%,
+
+      22% 85%,
+      14% 78%,
+      7% 68%
     );
 
-    background:
-      linear-gradient(
-        180deg,
-        rgba(255,255,255,.60) 0%,
-        rgba(255,255,255,.18) 25%,
-        rgba(255,255,255,0) 48%,
-        rgba(80,45,10,.25) 100%
-      );
+    background:linear-gradient(
+      180deg,
+      rgba(255,255,255,.62) 0%,
+      rgba(255,255,255,.18) 23%,
+      rgba(255,255,255,0) 46%,
+      rgba(0,0,0,.18) 72%,
+      rgba(0,0,0,.38) 100%
+    );
 
     mix-blend-mode:overlay;
   }
 
-  /* Kovan tabanı */
+
+  /* Mermi ile kovan arasındaki ince halka */
 
   .round .rim{
     position:absolute;
 
-    left:-1px;
-    top:8px;
+    left:23px;
+    top:1px;
 
-    width:7px;
-    height:26px;
+    width:4px;
+    height:14px;
 
-    background:
-      linear-gradient(
-        90deg,
-        #7e6125 0%,
-        #e4cb7a 35%,
-        #b18b38 70%,
-        #71551f 100%
-      );
+    background:linear-gradient(
+      90deg,
+      #654c1e,
+      #c49a43,
+      #654c1e
+    );
 
-    border-radius:2px 0 0 2px;
-
-    box-shadow:
-      inset 1px 0 rgba(255,255,255,.45),
-      inset -1px 0 rgba(0,0,0,.35);
+    z-index:3;
   }
 
-  /* Kovan ile çekirdek arasındaki halka */
+
+  /* Hafif metalik çizgi */
 
   .round::after{
     content:"";
 
     position:absolute;
 
-    left:50px;
-    top:11px;
+    left:28px;
+    right:3px;
+    top:3px;
 
-    width:3px;
-    height:20px;
+    height:2px;
 
-    background:
-      linear-gradient(
-        90deg,
-        #795423,
-        #e2bd5e,
-        #815a26
-      );
+    background:rgba(255,245,190,.28);
 
-    opacity:.9;
+    border-radius:50%;
+
+    pointer-events:none;
   }
+
 
   .slot.filled .round{
     opacity:1;
     transform:translateY(0);
   }
 
-  /* =========================
+
+  /* =========================================================
      İSİMLER
-  ========================= */
+     ========================================================= */
 
   #namesList{
     position:absolute;
 
-    /* Şarjörün hemen yanında */
-    left:162px;
+    left:145px;
     top:20px;
 
-    width:205px;
-    height:285px;
+    width:175px;
+    height:300px;
 
     display:flex;
     flex-direction:column-reverse;
 
     gap:3px;
+
     padding:6px 0;
   }
 
@@ -283,9 +292,8 @@
     align-items:center;
 
     font-family:'Teko',sans-serif;
-    font-weight:600;
+    font-weight:700;
 
-    /* Yazılar daha büyük */
     font-size:24px;
 
     letter-spacing:.5px;
@@ -293,46 +301,48 @@
     color:var(--paper);
 
     text-shadow:
-      0 1px 3px rgba(0,0,0,.8),
-      0 0 4px rgba(0,0,0,.4);
+      0 1px 3px rgba(0,0,0,.9),
+      0 0 4px rgba(0,0,0,.6);
 
     opacity:0;
 
     text-transform:uppercase;
 
     overflow:hidden;
+
     white-space:nowrap;
+
     text-overflow:ellipsis;
+
+    /* Sarı ok kaldırıldı */
+    padding-left:0;
   }
 
   .nameRow.filled{
     opacity:1;
   }
 
-  /* Sarı ok tamamen kaldırıldı */
 
-  .nameRow::before{
-    content:"";
-    display:none;
-  }
-
-  /* =========================
-     COUNTER
-  ========================= */
+  /* =========================================================
+     SAYI
+     ========================================================= */
 
   #status{
     position:absolute;
 
-    left:56px;
-    top:315px;
+    left:35px;
+    top:333px;
 
-    width:102px;
+    width:105px;
 
     text-align:center;
 
     font-family:'Teko',sans-serif;
+
     font-weight:700;
+
     font-size:20px;
+
     letter-spacing:1px;
 
     color:var(--glass);
@@ -345,12 +355,14 @@
     color:var(--brass);
   }
 
-  /* =========================
-     DEMO PANEL
-  ========================= */
+
+  /* =========================================================
+     TEST PANELİ
+     ========================================================= */
 
   #demoPanel{
     position:fixed;
+
     left:12px;
     top:12px;
 
@@ -363,7 +375,9 @@
     padding:10px;
 
     display:flex;
+
     flex-direction:column;
+
     gap:6px;
 
     z-index:50;
@@ -371,6 +385,7 @@
 
   #demoPanel input{
     background:#0e100e;
+
     border:1px solid #3c4636;
 
     color:var(--paper);
@@ -380,6 +395,7 @@
     border-radius:4px;
 
     font-family:'Rajdhani',sans-serif;
+
     font-size:13px;
 
     width:150px;
@@ -397,7 +413,9 @@
     border-radius:4px;
 
     font-family:'Rajdhani',sans-serif;
+
     font-weight:600;
+
     font-size:13px;
 
     cursor:pointer;
@@ -405,21 +423,25 @@
 
   #demoPanel button.reset{
     background:#8a3a2a;
+
     border-color:#c9432a;
   }
 
   #demoPanel .label{
     font-size:11px;
+
     color:#9fb08f;
 
     letter-spacing:.5px;
 
     text-transform:uppercase;
   }
+
 </style>
 </head>
 
 <body>
+
 
 <div id="demoPanel">
 
@@ -449,7 +471,8 @@
 
   <div id="canvas">
 
-    <!-- ŞARJÖR -->
+
+    <!-- ================= MERMİ ŞARJÖRÜ ================= -->
 
     <div id="magBody">
 
@@ -496,7 +519,7 @@
     </div>
 
 
-    <!-- İSİMLER -->
+    <!-- ================= İSİMLER ================= -->
 
     <div id="namesList">
 
@@ -519,11 +542,13 @@
 
 
 <script>
+
 (function(){
 
   const MAX_ROUNDS = 5;
 
   const AUTO_RELOAD_ON_OVERFLOW = true;
+
 
   const magBody =
     document.getElementById('magBody');
@@ -547,7 +572,7 @@
 
   function render(){
 
-    slots.forEach((slot,i) => {
+    slots.forEach((slot,i)=>{
 
       slot.classList.toggle(
         'filled',
@@ -557,21 +582,24 @@
     });
 
 
-    nameRows.forEach((row,i) => {
+    nameRows.forEach((row,i)=>{
 
       if(i < names.length){
 
         row.textContent =
           names[i];
 
-        row.classList.add('filled');
+        row.classList.add(
+          'filled'
+        );
 
       }else{
 
-        row.textContent =
-          '';
+        row.textContent = '';
 
-        row.classList.remove('filled');
+        row.classList.remove(
+          'filled'
+        );
 
       }
 
@@ -583,7 +611,9 @@
 
 
     statusEl.textContent =
-      names.length + ' / ' + MAX_ROUNDS;
+      names.length +
+      ' / ' +
+      MAX_ROUNDS;
 
 
     statusEl.classList.toggle(
@@ -622,14 +652,13 @@
         render();
 
 
-        setTimeout(() => {
+        setTimeout(()=>{
 
           names.push(name);
 
           render();
 
         },200);
-
 
         return;
 
@@ -658,7 +687,7 @@
 
   document
     .getElementById('addBtn')
-    .addEventListener('click',() => {
+    .addEventListener('click',()=>{
 
       const input =
         document.getElementById('nameInput');
@@ -677,27 +706,35 @@
 
   document
     .getElementById('nameInput')
-    .addEventListener('keydown',e => {
+    .addEventListener('keydown',e=>{
 
-      if(e.key === 'Enter')
+      if(e.key === 'Enter'){
+
         document
           .getElementById('addBtn')
           .click();
+
+      }
 
     });
 
 
   document
     .getElementById('resetBtn')
-    .addEventListener('click',() => {
+    .addEventListener(
+      'click',
+      ()=>window.resetMag()
+    );
 
-      window.resetMag();
 
-    });
-
+  /* =========================================================
+     DEMO PANEL
+     ========================================================= */
 
   const params =
-    new URLSearchParams(location.search);
+    new URLSearchParams(
+      location.search
+    );
 
 
   if(params.get('demo') === '0'){
@@ -709,7 +746,9 @@
   }
 
 
-  /* KICK WEBSOCKET */
+  /* =========================================================
+     KICK WEBSOCKET
+     ========================================================= */
 
   const wsUrl =
     params.get('ws');
@@ -724,7 +763,7 @@
 
 
       socket.onmessage =
-        (ev) => {
+        (ev)=>{
 
           try{
 
@@ -753,16 +792,18 @@
 
 
       socket.onclose =
-        () =>
+        ()=>{
           setTimeout(
             connect,
             2000
           );
+        };
 
 
       socket.onerror =
-        () =>
+        ()=>{
           socket.close();
+        };
 
     }
 
@@ -771,6 +812,10 @@
 
   }
 
+
+  /* =========================================================
+     ÖLÇEK
+     ========================================================= */
 
   function fitScale(){
 
@@ -798,6 +843,7 @@
   fitScale();
 
 })();
+
 </script>
 
 </body>
